@@ -1,0 +1,70 @@
+<%= form_for @dealer do |f| %>
+  <div>
+    <!-- player's turn -->
+    <% if params[:commit] == "Make Bet" || params[:commit] == "Hit" %>
+      <%= f.label :cards, "Dealer's cards" %><br/>
+      <%= image_tag "cover.jpg" %>
+      <%= image_tag to_image(@dealer.cards[1]) %>
+      <br/><br/>
+
+    <!-- dealer's turn -->
+    <% elsif params[:commit] == "Stay" || params[:commit] == "Next" %>
+      <%= label_tag(:dealer, "Dealer's Cards:") %><br>
+      <% @dealer.cards.each do |card| %>
+        <%= image_tag to_image(card) %>
+      <% end %>
+      <br/><br/>
+
+      <% dealers_value = value(@dealer.cards) %>
+      <% players_value = value(@playboy.cards) %>
+      <% if dealers_value > 21 %>
+        <%= report(@playboy, @playboy.wager,
+                  "#{@playboy.name} wins. Dealer busted. #{@playboy.name} stayed at #{players_value}") %>
+      <% elsif dealers_value == 21 %>
+        <% @playboy.update_attribute(:budget, @playboy.budget - @playboy.wager) %>
+        <%= report(@playboy, -@playboy.wager,
+                  "Dealer wins. Dealer hit blackjack.") %>
+      <% elsif dealers_value >= 17 %>
+        <% if dealers_value > players_value %>
+          <%= report(@playboy, -@playboy.wager,
+                    "#{@playboy.name} loses. #{@playboy.name} stayed at #{players_value}, and the dealer stayed at #{dealers_value}.") %>
+        <% elsif dealers_value == players_value %>
+          <%= report(@playboy, 0,
+                    "#{@playboy.name} loses. It's a tie! Both #{@played.name} and the dealer staed at {@players_value}.") %>
+        <% else %>
+          <% @playboy.update_attribute(:budget, @playboy.budget + @playboy.wager) %>
+          <%= report(@playboy, @playboy.wager,
+                    "#{@playboy.name} wins. #{@playboy.name} stayed at #{players_value}, and the dealer stayed at #{dealers_value}.") %>
+        <% end %>
+      <% else %>
+        <%= f.submit "Next" %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= form_for @playboy do |f| %>
+  <div>
+    <%= f.label :cards, "#{@playboy.name}'s cards" %><br/>
+    <% @playboy.cards.each do |card| %>
+      <%= image_tag to_image(card) %>
+    <% end %>
+    <br/><br/>
+
+    <!-- player's turn -->
+    <% if params[:commit] == "Make Bet" || params[:commit] == "Hit" %>
+      <% value = value(@playboy.cards) %>
+      <% if value > 21 %>
+        <%= report(@playboy, -@playboy.wager,
+                  "#{@playboy.name} loses. It looks like #{@playboy.name} busted at #{value}.") %>
+      <% elsif value == 21 %>
+        <%= report(@playboy, @playboy.wager,
+                  "#{@playboy.name} wins. #{@playboy.name} hit blackjack.") %>
+      <% else %>
+        <%= "#{@playboy.name} has #{value}. What would #{@playboy.name} like to do?" %></br>
+        <%= f.submit "Hit" %>
+        <%= f.submit "Stay" %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
