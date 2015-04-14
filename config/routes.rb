@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root 'players#index'
   resources :players
+  get 'players/game_over' => 'players#game_over', as: :game_over
   # get 'players/bet' => 'players#bet'
 
   # The priority is based upon order of creation: first created -> highest priority.

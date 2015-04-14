@@ -24,11 +24,4 @@ module PlayersHelper
   def to_image(card)
     "#{card.suit}_#{card.value}.jpg"
   end
-
-  def report(player, change, status)
-    if change
-      player.update_attribute(:budget, player.budget + change)
-    end
-    status + " #{player.name} now has #{player.budget}."
-  end
 end

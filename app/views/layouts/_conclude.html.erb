@@ -1,0 +1,13 @@
+<b><%= status %></b>
+<%= why %>
+<% if change %>
+  <% player.update_attribute(:budget, player.budget + change) %>
+<% end %>
+<%= "#{player.name} now has " %>
+<b><%= "$#{player.budget}." %></b>
+
+<%= form_for player do |f| %>
+  <b><%= f.label :again, "Play again?" %></b>
+  <%= f.submit "Yes" %>
+  <%= f.submit "No" %>
+<% end %>

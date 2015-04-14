@@ -1,3 +1,58 @@
+<% players_value = value(@playboy.cards) %>
+
+<% if params[:commit] == "Make Bet" || params[:commit] == "Hit" %>
+  <% players_value = value(@playboy.cards) %>
+  <% if players_value > 21 %>
+    <%= render partial: 'layouts/conclude',
+               locals: {status: "#{@playboy.name} loses.",
+                        why: "It looks like #{@playboy.name} busted at #{players_value}.",
+                        change: -@playboy.wager,
+                        player: @playboy} %>
+  <% elsif players_value == 21 %>
+    <%= render partial: 'layouts/conclude',
+               locals: {status: "#{@playboy.name} wins.",
+                        why: "#{@playboy.name} hit blackjack.",
+                        change: @playboy.wager,
+                        player: @playboy} %>
+  <% end %>
+
+<% elsif params[:commit] == "Stay" || params[:commit] == "Next" %>
+  <% dealers_value = value(@dealer.cards) %>
+  <% if dealers_value > 21 %>
+    <%= render partial: 'layouts/conclude',
+               locals: {status: "#{@playboy.name} wins.",
+                        why: "Dealer busted. #{@playboy.name} stayed at #{players_value}.",
+                        change: @playboy.wager,
+                        player: @playboy} %>
+  <% elsif dealers_value == 21 %>
+    <%= render partial: 'layouts/conclude',
+               locals: {status: "Dealer wins.",
+                        why: "Dealer hit blackjack.",
+                        change: -@playboy.wager,
+                        player: @playboy} %>
+  <% elsif dealers_value >= 17 %>
+    <% if dealers_value > players_value %>
+      <%= render partial: 'layouts/conclude',
+                 locals: {status: "#{@playboy.name} loses.",
+                          why: "#{@playboy.name} stayed at #{players_value}, and the dealer stayed at #{dealers_value}.",
+                          change: -@playboy.wager,
+                          player: @playboy} %>
+    <% elsif dealers_value == players_value %>
+      <%= render partial: 'layouts/conclude',
+                 locals: {status: "It's a tie!",
+                          why: "Both #{@played.name} and the dealer staed at {@players_value}.",
+                          change: 0,
+                          player: @playboy} %>
+    <% else %>
+      <%= render partial: 'layouts/conclude',
+                 locals: {status: "#{@playboy.name} wins.",
+                          why: "#{@playboy.name} stayed at #{players_value}, and the dealer stayed at #{dealers_value}.",
+                          change: @playboy.wager,
+                          player: @playboy} %>
+    <% end %>
+  <% end %>
+<% end %>
+
 <%= form_for @dealer do |f| %>
   <div>
     <!-- player's turn -->
@@ -14,29 +69,7 @@
         <%= image_tag to_image(card) %>
       <% end %>
       <br/><br/>
-
-      <% dealers_value = value(@dealer.cards) %>
-      <% players_value = value(@playboy.cards) %>
-      <% if dealers_value > 21 %>
-        <%= report(@playboy, @playboy.wager,
-                  "#{@playboy.name} wins. Dealer busted. #{@playboy.name} stayed at #{players_value}") %>
-      <% elsif dealers_value == 21 %>
-        <% @playboy.update_attribute(:budget, @playboy.budget - @playboy.wager) %>
-        <%= report(@playboy, -@playboy.wager,
-                  "Dealer wins. Dealer hit blackjack.") %>
-      <% elsif dealers_value >= 17 %>
-        <% if dealers_value > players_value %>
-          <%= report(@playboy, -@playboy.wager,
-                    "#{@playboy.name} loses. #{@playboy.name} stayed at #{players_value}, and the dealer stayed at #{dealers_value}.") %>
-        <% elsif dealers_value == players_value %>
-          <%= report(@playboy, 0,
-                    "#{@playboy.name} loses. It's a tie! Both #{@played.name} and the dealer staed at {@players_value}.") %>
-        <% else %>
-          <% @playboy.update_attribute(:budget, @playboy.budget + @playboy.wager) %>
-          <%= report(@playboy, @playboy.wager,
-                    "#{@playboy.name} wins. #{@playboy.name} stayed at #{players_value}, and the dealer stayed at #{dealers_value}.") %>
-        <% end %>
-      <% else %>
+      <% if (dealers_value < 17) %>
         <%= f.submit "Next" %>
       <% end %>
     <% end %>
@@ -53,15 +86,8 @@
 
     <!-- player's turn -->
     <% if params[:commit] == "Make Bet" || params[:commit] == "Hit" %>
-      <% value = value(@playboy.cards) %>
-      <% if value > 21 %>
-        <%= report(@playboy, -@playboy.wager,
-                  "#{@playboy.name} loses. It looks like #{@playboy.name} busted at #{value}.") %>
-      <% elsif value == 21 %>
-        <%= report(@playboy, @playboy.wager,
-                  "#{@playboy.name} wins. #{@playboy.name} hit blackjack.") %>
-      <% else %>
-        <%= "#{@playboy.name} has #{value}. What would #{@playboy.name} like to do?" %></br>
+      <% if players_value < 21 %>
+        <%= "#{@playboy.name} has #{players_value}. What would #{@playboy.name} like to do?" %></br>
         <%= f.submit "Hit" %>
         <%= f.submit "Stay" %>
       <% end %>

@@ -5,7 +5,6 @@ class PlayersController < ApplicationController
 
   def new
     # render text: params.inspect
-    # hardcode the player id for now, but afterwards must find some other way to look up player
     @playboy = Player.find(params[:id])
   end
 
@@ -30,15 +29,24 @@ class PlayersController < ApplicationController
   end
 
   def update
-    @playboy = Player.find(params[:id])
-    if (params[:commit] == "Make Bet")
-      @playboy.update_attribute(:wager, params[:player][:wager])
-    elsif (params[:commit] == "Hit")
-      new_card @playboy
-    end
+    if (params[:commit] == "Yes")
+      redirect_to new_player_path(@playboy)
+    elsif (params[:commit] == "No")
+      redirect_to game_over_path
+    else
+      @dealer = Player.find_by(name: "dealer", player_id: params[:id])
 
-    @dealer = Player.find_by(name: "dealer", player_id: params[:id])
-    logger.debug "TRUONG:: dealer: #{@dealer.nil? ? '' : 'not '} nil, player_id: #{params[:id]}}"
+      @playboy = Player.find(params[:id])
+      logger.debug "TRUONG:: id: #{params[:id]}, name: #{@playboy.id}"
+      if (params[:commit] == "Make Bet")
+        @playboy.update_attribute(:wager, params[:player][:wager])
+      elsif (params[:commit] == "Hit")
+        new_card @playboy
+      end
+    end
+  end
+
+  def game_over
   end
 
   private
