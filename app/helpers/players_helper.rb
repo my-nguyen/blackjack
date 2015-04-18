@@ -1,15 +1,15 @@
 module PlayersHelper
-  def value(cards)
+  def value cards
     ace_dealt = false
     sum = 0
     cards.each do |card|
-      if (card.value == 'ace')
+      if (card.number == 'ace')
         ace_dealt = true
         sum += 1
-      elsif (card.value == 'jack' || card.value == 'queen' || card.value == 'king')
+      elsif (card.number == 'jack' || card.number == 'queen' || card.number == 'king')
         sum += 10
       else
-        sum += card.value.to_i
+        sum += card.number.to_i
       end
     end
 
@@ -22,6 +22,6 @@ module PlayersHelper
   end
 
   def to_image(card)
-    "#{card.suit}_#{card.value}.jpg"
+    "#{card.suit}_#{card.number}.jpg"
   end
 end

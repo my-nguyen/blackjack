@@ -1,8 +1,19 @@
 Rails.application.routes.draw do
-  root 'players#index'
-  resources :players
-  get 'players/game_over' => 'players#game_over', as: :game_over
-  # get 'players/bet' => 'players#bet'
+  root 'players#new_game'
+  get 'new_game' => 'players#new_game'
+  post 'new_game' => 'players#new_game'
+  get 'bet' => 'players#bet'
+  post 'bet' => 'players#bet'
+  get 'play' => 'players#play'
+  post 'play' => 'players#play'
+  get 'game_over' => 'players#game_over'
+=begin
+  namespace :players do
+    get 'new_game'
+    post 'bet'
+    post 'game'
+  end
+=end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

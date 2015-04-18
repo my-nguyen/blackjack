@@ -1,0 +1,14 @@
+<!-- GET method will expose query information in the URL
+     POST method will not.
+     form_tag("/bet") will generate HTML with action="/bet" and method=POST
+     routes.rb routes a POST of "/bet" to "players#bet"
+     The end result is that clicking on the submit button will lead to the
+     players#bet action and render the bet view template -->
+<%= form_tag("/bet") do %>
+  <div>
+    <h4><%= label_tag(:name, "What's your name?") %></h4>
+    <%= text_field_tag(:name) %>
+  </div>
+  <% session[:budget] = 500 %>
+  <br/><%= submit_tag("Submit") %>
+<% end %>
