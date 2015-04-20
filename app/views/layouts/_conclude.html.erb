@@ -1,11 +1,30 @@
-<b><%= status %></b>
-<%= why %>
-<% if change %>
-  <% session[:budget] += change %>
-<% end %>
-<%= "#{session[:name]} now has " %>
-<b><%= "$#{session[:budget]}." %></b><br/>
+<% klass = "alert alert-" + (lost ? "error" : "info") %>
 
-<b><%= label_tag(:again, "Play again?") %></b>
-<%= submit_tag("Yes") %>
-<%= submit_tag("No") %>
+<% if lost %>
+  <div class="alert alert-error">
+    <strong><%= status %></strong>
+    <%= why %>
+    <% if change %>
+      <% session[:budget] += change %>
+    <% end %>
+    <%= "#{session[:name]} now has " %>
+    <strong><%= "$#{session[:budget]}." %></strong><br/>
+  </div>
+<% else %>
+  <div class="alert alert-info">
+    <strong><%= status %></strong>
+    <%= why %>
+    <% if change %>
+      <% session[:budget] += change %>
+    <% end %>
+    <%= "#{session[:name]} now has " %>
+    <strong><%= "$#{session[:budget]}." %></strong><br/>
+</div>
+<% end %>
+
+<p></p>
+<h5>Play again?
+  <%= link_to("Yes", "/bet", class: "btn btn-primary") %>
+  <%= link_to("No", "/game_over", class: "btn") %>
+</h5>
+<p></p>

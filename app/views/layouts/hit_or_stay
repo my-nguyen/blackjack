@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blackjack!</title>
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/application.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/application.js"></script>
+  </head>
+  <body style="padding-top: 50px;">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+            <ul class="nav">
+              <li><a href="/new_game">Start Over</a></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+
+  <div class="container">
+
+
+      <div id="game">
+
+
+
+
+  <h1 id="title">Blackjack!</h1>
+
+  <div class="well" id='dealer'>
+    <h4>Dealer's Cards:</h4>
+
+
+      <img src='/images/cards/cover.jpg' style='margin:0px 5px 5px 0px'>
+
+
+
+      <img src='/images/cards/diamonds_7.jpg' style='margin:0px 5px 5px 0px'>
+
+
+
+  </div>
+
+
+  <div class="well" id='player'>
+    <h4>George Washington's Cards:</h4>
+
+    <img src='/images/cards/spades_4.jpg' style='margin:0px 5px 5px 0px'>
+
+    <img src='/images/cards/diamonds_2.jpg' style='margin:0px 5px 5px 0px'>
+
+
+  </div>
+
+
+    <h4>
+      George Washington has 6. What would George Washington  like to do?
+      <small>George Washington has <strong>$500</strong> total. Bet amount this round: <strong>$50</strong></small>
+    </h4>
+
+    <p id="action_buttons">
+      <form id="hit" action="/game/player/hit" method="POST">
+        <input type="submit" value="Hit" class= "btn btn-success btn-large" />
+      </form>
+      <form id="stay" action="/game/player/stay" method="POST">
+        <input type="submit" value="Stay" class= "btn btn-warning btn-large" />
+      </form>
+    </p>
+
+</div>
+
+
+  </div>
+  </body>
+</html>

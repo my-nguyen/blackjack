@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blackjack!</title>
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/application.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/application.js"></script>
+  </head>
+  <body style="padding-top: 50px;">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+            <ul class="nav">
+              <li><a href="/new_game">Start Over</a></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+
+  <div class="container">
+
+
+        <h3>You've amassed a final amount of $600</h3>
+  <p>
+    Now that you've honed your blackjack skills, there's nothing left to do except go to Vegas.
+  </p>
+
+<a href="/new_game">Start over</a>
+
+  </div>
+  </body>
+</html>

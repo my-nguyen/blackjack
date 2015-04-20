@@ -1,106 +1,120 @@
-<%= form_tag do %>
-  <div>
-    <% if params[:commit] == "Make Bet" %>
-      <% session[:wager] = params[:wager] %>
+<% name = session[:name] %>
+<% wager = session[:wager].to_i %>
+<% budget = session[:budget] %>
+<% dealer_value = value(@dealer_cards) %>
+<% player_value = value(@player_cards) %>
+
+<% if session[:player_turn] %>
+  <% if player_value > 21 %>
+    <%= render partial: 'layouts/conclude',
+               locals: {lost: true,
+                        status: "#{name} loses.",
+                        why: "It looks like #{name} busted at #{player_value}.",
+                        change: -wager} %>
+  <% elsif player_value == 21 %>
+    <%= render partial: 'layouts/conclude',
+               locals: {lost: false,
+                        status: "#{name} wins.",
+                        why: "#{name} hit blackjack.",
+                        change: wager} %>
+  <% end %>
+
+<% else %>
+  <% if dealer_value > 21 %>
+    <%= render partial: 'layouts/conclude',
+               locals: {lost: false,
+                        status: "#{name} wins.",
+                        why: "Dealer busted. #{name} stayed at #{player_value}.",
+                        change: wager} %>
+  <% elsif dealer_value == 21 %>
+    <%= render partial: 'layouts/conclude',
+               locals: {lost: true,
+                        status: "Dealer wins.",
+                        why: "Dealer hit blackjack.",
+                        change: -wager} %>
+  <% elsif dealer_value >= 17 %>
+    <% player_value = value(@player_cards) %>
+    <% if dealer_value > player_value %>
+      <%= render partial: 'layouts/conclude',
+                 locals: {lost: true,
+                          status: "#{name} loses.",
+                          why: "#{name} stayed at #{player_value}, and the dealer stayed at #{dealer_value}.",
+                          change: -wager} %>
+    <% elsif dealer_value == player_value %>
+      <%= render partial: 'layouts/conclude',
+                 locals: {lost: false,
+                          status: "It's a tie!",
+                          why: "Both #{name} and the dealer staed at #{player_value}.",
+                          change: 0} %>
+    <% else %>
+      <%= render partial: 'layouts/conclude',
+                 locals: {lost: false,
+                          status: "#{name} wins.",
+                          why: "#{name} stayed at #{player_value}, and the dealer stayed at #{dealer_value}.",
+                          change: wager} %>
     <% end %>
-
-    <% name = session[:name] %>
-    <% wager = session[:wager].to_i %>
-    <% budget = session[:budget] %>
-
-    <% if params[:commit] == "Make Bet" || params[:commit] == "Hit" %>
-      <% player_value = value(@player_cards) %>
-      <% if player_value > 21 %>
-        <%= render partial: 'layouts/conclude',
-                   locals: {status: "#{name} loses.",
-                            why: "It looks like #{name} busted at #{player_value}.",
-                            change: -wager} %>
-      <% elsif player_value == 21 %>
-        <%= render partial: 'layouts/conclude',
-                   locals: {status: "#{name} wins.",
-                            why: "#{name} hit blackjack.",
-                            change: wager} %>
-      <% end %>
-
-    <% elsif params[:commit] == "Stay" || params[:commit] == "Next" %>
-      <% dealer_value = value(@dealer_cards) %>
-      <% if dealer_value > 21 %>
-        <%= render partial: 'layouts/conclude',
-                   locals: {status: "#{name} wins.",
-                            why: "Dealer busted. #{name} stayed at #{player_value}.",
-                            change: wager} %>
-      <% elsif dealer_value == 21 %>
-        <%= render partial: 'layouts/conclude',
-                   locals: {status: "Dealer wins.",
-                            why: "Dealer hit blackjack.",
-                            change: -wager} %>
-      <% elsif dealer_value >= 17 %>
-        <% player_value = value(@player_cards) %>
-        <% if dealer_value > player_value %>
-          <%= render partial: 'layouts/conclude',
-                     locals: {status: "#{name} loses.",
-                              why: "#{name} stayed at #{player_value}, and the dealer stayed at #{dealer_value}.",
-                              change: -wager} %>
-        <% elsif dealer_value == player_value %>
-          <%= render partial: 'layouts/conclude',
-                     locals: {status: "It's a tie!",
-                              why: "Both #{name} and the dealer staed at #{player_value}.",
-                              change: 0} %>
-        <% else %>
-          <%= render partial: 'layouts/conclude',
-                     locals: {status: "#{name} wins.",
-                              why: "#{name} stayed at #{player_value}, and the dealer stayed at #{dealer_value}.",
-                              change: wager} %>
-        <% end %>
-      <% end %>
-    <% end %>
-  </div>
-
-  <div>
-    <h1>Blackjack!</h1>
-    <!-- player's turn -->
-    <% if params[:commit] == "Make Bet" || params[:commit] == "Hit" %>
-      <h4><%= label_tag(:cards, "Dealer's cards:") %></h4>
-      <%= image_tag "cover.jpg" %>
-      <%= image_tag to_image(@dealer_cards[1]) %>
-      <br/><br/>
-
-    <!-- dealer's turn -->
-    <% elsif params[:commit] == "Stay" || params[:commit] == "Next" %>
-      <h4><%= label_tag(:dealer, "Dealer's Cards:") %></h4>
-      <% @dealer_cards.each do |card| %>
-        <%= image_tag to_image(card) %>
-      <% end %>
-      <br/><br/>
-      <% if (dealer_value < 17) %>
-        <b><%= "Dealer has #{dealer_value} and will hit." %><b/><br/>
-        <%= submit_tag("Next") %>
-      <% end %>
-    <% end %>
-  </div>
-
-  <div>
-    <% if params[:commit] != "Yes" && params[:commit] != "No" %>
-      <h4><%= label_tag(:cards, "#{name}'s cards:") %></h4>
-      <% @player_cards.each do |card| %>
-        <%= image_tag to_image(card), style: "margin:0px 5px 5px 0px" %>
-      <% end %>
-      <br/><br/>
-
-      <!-- player's turn -->
-      <% if params[:commit] == "Make Bet" || params[:commit] == "Hit" %>
-        <% if player_value < 21 %>
-          <b><%= "#{name} has #{player_value}. What would #{name} like to do?" %></b>
-          <dimm>
-            <%= "#{name} has " %>
-            <b><%= "$#{budget}" %></b>
-            <%= " total. Bet amount this round: " %>
-            <b><%= "$#{wager}" %></b></br>
-          </dimm>
-          <%= submit_tag("Hit") %>
-          <%= submit_tag("Stay") %>
-        <% end %>
-      <% end %>
-    <% end %>
-  </div>
+  <% end %>
 <% end %>
+
+<div id="game">
+  <h1 id="title">Blackjack!</h1>
+  <div class="well" id='dealer'>
+    <h4>Dealer's Cards:</h4>
+
+    <!-- player's turn -->
+    <% if session[:player_turn] %>
+      <%= image_tag "cover.jpg" %>
+      <%= image_tag to_image(@dealer_cards[1]), style: 'margin:0px 5px 5px 0px' %>
+      <br/><br/>
+    <!-- dealer's turn -->
+    <% else %>
+      <% @dealer_cards.each do |card| %>
+        <%= image_tag to_image(card), style: 'margin:0px 5px 5px 0px' %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if !session[:player_turn] %>
+    <% if (dealer_value < 17) %>
+      <b><%= "Dealer has #{dealer_value} and will hit." %><b/><br/>
+      <%= form_tag("/next") do %>
+        <%= submit_tag("Click to see the dealer's next card ->") %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <div class="well" id='player'>
+    <h4><%= label_tag(:cards, "#{name}'s cards:") %></h4>
+    <% @player_cards.each do |card| %>
+      <%= image_tag to_image(card), style: "margin:0px 5px 5px 0px" %>
+    <% end %>
+    <% if !session[:player_turn] %>
+      <p id="stay_message"></p>
+      <h5><%= "#{name} stayed at 18. #{name} has $#{budget} and bet $#{wager} this round." %></h5>
+      <p></p>
+    <% end %>
+  </div>
+
+  <!-- player's turn -->
+  <% if session[:player_turn] %>
+    <% if player_value < 21 %>
+      <h4>
+        <%= "#{name} has #{player_value}. What would #{name} like to do?" %>
+        <small>
+          <%= "#{name} has " %>
+          <strong><%= "$#{budget}" %></strong>
+          <%= " total. Bet amount this round: " %>
+          <strong><%= "$#{wager}" %></strong>
+        </small>
+      </h4>
+      <p id="action_buttons">
+        <%= form_tag("/hit", id: "hit") do %>
+          <%= submit_tag("Hit", class: "btn btn-success btn-large") %>
+        <% end %>
+        <%= form_tag("/stay", id: "stay") do %>
+          <%= submit_tag("Stay", class: "btn btn-warning btn-large") %>
+        <% end %>
+      </p>
+    <% end %>
+  <% end %>
+</div>

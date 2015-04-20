@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   post 'bet' => 'players#bet'
   get 'play' => 'players#play'
   post 'play' => 'players#play'
+  post 'hit' => 'players#hit'
+  post 'stay' => 'players#stay'
+  post 'next' => 'players#next'
   get 'game_over' => 'players#game_over'
 =begin
   namespace :players do

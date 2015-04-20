@@ -4,11 +4,8 @@
      routes.rb routes a POST of "/bet" to "players#bet"
      The end result is that clicking on the submit button will lead to the
      players#bet action and render the bet view template -->
-<%= form_tag("/bet") do %>
-  <div>
-    <h4><%= label_tag(:name, "What's your name?") %></h4>
-    <%= text_field_tag(:name) %>
-  </div>
-  <% session[:budget] = 500 %>
-  <br/><%= submit_tag("Submit") %>
+<h4>What's your name?</h4>
+<%= form_tag("/new_game") do %>
+  <%= text_field_tag(:name) %><br/>
+  <%= submit_tag("Submit") %>
 <% end %>

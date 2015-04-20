@@ -1,7 +1,11 @@
-<header class="navbar navbar-fixed-top navbar-inverse">
-  <div class="container">
-    <%= form_tag "/new_game", method: :post do %>
-      <%= submit_tag("Start Over", class: 'so_button') %>
-    <% end %>
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <ul class="nav">
+        <li>
+          <a href="/new_game">Start Over</a>
+        </li>
+      </ul>
+    </div>
   </div>
-</header>
+</div>

@@ -1,9 +1,9 @@
 <h3>Make a bet for this round.</h3>
-<%= form_tag("/play") do %>
-  <% if !params[:name].nil? %>
-    <% session[:name] = params[:name] %>
-  <% end %>
-  <%= label_tag(:wager, "#{session[:name]} has $#{session[:budget]}.") %><br/><br/>
-  <%= text_field_tag(:wager) %><br/><br/>
+<% if session[:name].nil? %>
+  <% session[:name] = params[:name] %>
+<% end %>
+<p><%= "#{session[:name]} has $#{session[:budget]}." %></p>
+<%= form_tag("/bet") do %>
+  <%= text_field_tag(:wager, nil, style: "width: 50px") %><br/>
   <%= submit_tag("Make Bet") %>
 <% end %>

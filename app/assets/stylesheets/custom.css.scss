@@ -1,9 +1,19 @@
-dimm {
-  font-size: 10pt;
-  color: #777;
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+.nav {
+  background-color: light-grey;
 }
 
-so_button {
-  border: none;
-  background: none;
+h5 {
+  font-size: 14px;
+}
+
+#hit {
+  float: left;
+}
+
+#stay {
+  padding-left: 10px;
+  float: left;
 }
