@@ -11,10 +11,18 @@ class PlayersController < ApplicationController
   # or by a "Yes" button on the play view
   def bet
     if (params[:commit] == "Make Bet")
-      session[:wager] = params[:wager]
-      session[:new_game] = true
-      session[:player_turn] = true
-      redirect_to play_path
+      if (params[:wager] == "" || params[:wager].to_i > session[:budget])
+        render :bet
+      else
+        session[:wager] = params[:wager]
+        session[:new_game] = true
+        session[:player_turn] = true
+        redirect_to play_path
+      end
+    else
+      if session[:budget] == 0
+        redirect_to game_over_path
+      end
     end
   end
 
@@ -24,6 +32,7 @@ class PlayersController < ApplicationController
   def play
     # render text: params.inspect
     if (session[:new_game])
+      logger.debug("TRUONG calling Card.destroy_all()")
       Card.destroy_all
 
       @dealer_cards = Array.new

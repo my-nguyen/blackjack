@@ -1,3 +1,15 @@
+<% if !params[:wager].nil? %>
+  <% if params[:wager] == "" %>
+    <div class="alert alert-error">
+      Must make a bet
+    </div>
+  <% elsif params[:wager].to_i > session[:budget] %>
+    <div class="alert alert-error">
+      <%= "Bet amount cannot be greater than what you have ($#{session[:budget]})" %>
+    </div>
+  <% end %>
+<% end %>
+
 <h3>Make a bet for this round.</h3>
 <% if session[:name].nil? %>
   <% session[:name] = params[:name] %>

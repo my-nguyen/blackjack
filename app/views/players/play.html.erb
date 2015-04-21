@@ -14,7 +14,7 @@
   <% elsif player_value == 21 %>
     <%= render partial: 'layouts/conclude',
                locals: {lost: false,
-                        status: "#{name} wins.",
+                        status: "#{name} wins!",
                         why: "#{name} hit blackjack.",
                         change: wager} %>
   <% end %>
@@ -23,7 +23,7 @@
   <% if dealer_value > 21 %>
     <%= render partial: 'layouts/conclude',
                locals: {lost: false,
-                        status: "#{name} wins.",
+                        status: "#{name} wins!",
                         why: "Dealer busted. #{name} stayed at #{player_value}.",
                         change: wager} %>
   <% elsif dealer_value == 21 %>
@@ -49,7 +49,7 @@
     <% else %>
       <%= render partial: 'layouts/conclude',
                  locals: {lost: false,
-                          status: "#{name} wins.",
+                          status: "#{name} wins!",
                           why: "#{name} stayed at #{player_value}, and the dealer stayed at #{dealer_value}.",
                           change: wager} %>
     <% end %>

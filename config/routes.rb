@@ -1,22 +1,23 @@
 Rails.application.routes.draw do
   root 'players#new_game'
+  # for URL localhost:3000/ or localhost:3000/new_game
   get 'new_game' => 'players#new_game'
+  # path for form_tag on the new_game page; this path was dictated by the game at tealeaf
   post 'new_game' => 'players#new_game'
+  # redirect_to here by the new_game action; or link_to here by the "Yes" link on the play page
   get 'bet' => 'players#bet'
+  # path for form_tag on the bet page; this path was dictated by the game at tealeaf
   post 'bet' => 'players#bet'
+  # redirect_to here by the bet action
   get 'play' => 'players#play'
-  post 'play' => 'players#play'
+  # path for the Stay form_tag on the play page
   post 'hit' => 'players#hit'
+  # path for the "Stay" form_tag on the play page
   post 'stay' => 'players#stay'
+  # path for the "Next" form_tag on the play page
   post 'next' => 'players#next'
+  # link_to here by the "No" link on the play page
   get 'game_over' => 'players#game_over'
-=begin
-  namespace :players do
-    get 'new_game'
-    post 'bet'
-    post 'game'
-  end
-=end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
