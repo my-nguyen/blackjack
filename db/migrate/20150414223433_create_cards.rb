@@ -1,9 +1,9 @@
 class CreateCards < ActiveRecord::Migration
   def change
     create_table :cards do |t|
-      t.boolean :player
+      t.boolean :is_player
       t.string :suit
-      t.string :number
+      t.string :value
 
       t.timestamps null: false
     end

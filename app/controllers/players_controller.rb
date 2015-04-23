@@ -31,20 +31,20 @@ class PlayersController < ApplicationController
   # (d) next action
   def play
     # render text: params.inspect
+    @dealer_cards = Cards.new(false)
+    @player_cards = Cards.new(true)
+
     if (session[:new_game])
-      logger.debug("TRUONG calling Card.destroy_all()")
-      Card.destroy_all
+      Cards.destroy_all
 
-      @dealer_cards = Array.new
-      @dealer_cards << new_card(false)
-      @dealer_cards << new_card(false)
+      @dealer_cards.deal
+      @dealer_cards.deal
 
-      @player_cards = Array.new
-      @player_cards << new_card(true)
-      @player_cards << new_card(true)
+      @player_cards.deal
+      @player_cards.deal
     else
-      @dealer_cards = Card.where(player: false).to_a
-      @player_cards = Card.where(player: true).to_a
+      @dealer_cards.load
+      @player_cards.load
     end
   end
 
@@ -52,7 +52,8 @@ class PlayersController < ApplicationController
   end
 
   def hit
-    new_card(true)
+    @player_cards = Cards.new(true)
+    @player_cards.deal
     session[:new_game] = false
     redirect_to play_path
   end
@@ -64,19 +65,8 @@ class PlayersController < ApplicationController
   end
 
   def next
-    new_card(false)
+    @dealer_cards = Cards.new(false)
+    @dealer_cards.deal
     redirect_to play_path
-  end
-
-  private
-  def new_card is_player
-    suits = %w(clubs diamonds hearts spades)
-    numbers = %w(king ace 2 3 4 5 6 7 8 9 10 jack queen)
-
-    begin
-      suit = suits[rand(4)]
-      number = numbers[rand(13)]
-    end while Card.where(suit: suit, number: number).any?
-    Card.create(player: is_player, suit: suit, number: number)
   end
 end

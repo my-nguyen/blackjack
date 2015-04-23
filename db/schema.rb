@@ -14,9 +14,9 @@
 ActiveRecord::Schema.define(version: 20150414223433) do
 
   create_table "cards", force: :cascade do |t|
-    t.boolean  "player"
+    t.boolean  "is_player"
     t.string   "suit"
-    t.string   "number"
+    t.string   "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

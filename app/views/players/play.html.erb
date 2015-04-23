@@ -1,8 +1,8 @@
 <% name = session[:name] %>
 <% wager = session[:wager].to_i %>
 <% budget = session[:budget] %>
-<% dealer_value = value(@dealer_cards) %>
-<% player_value = value(@player_cards) %>
+<% dealer_value = @dealer_cards.value %>
+<% player_value = @player_cards.value %>
 
 <% if session[:player_turn] %>
   <% if player_value > 21 %>
@@ -33,7 +33,6 @@
                         why: "Dealer hit blackjack.",
                         change: -wager} %>
   <% elsif dealer_value >= 17 %>
-    <% player_value = value(@player_cards) %>
     <% if dealer_value > player_value %>
       <%= render partial: 'layouts/conclude',
                  locals: {lost: true,
@@ -64,12 +63,12 @@
     <!-- player's turn -->
     <% if session[:player_turn] %>
       <%= image_tag "cover.jpg" %>
-      <%= image_tag to_image(@dealer_cards[1]), style: 'margin:0px 5px 5px 0px' %>
+      <%= image_tag @dealer_cards.cards[1].to_s, style: 'margin:0px 5px 5px 0px' %>
       <br/><br/>
     <!-- dealer's turn -->
     <% else %>
-      <% @dealer_cards.each do |card| %>
-        <%= image_tag to_image(card), style: 'margin:0px 5px 5px 0px' %>
+      <% @dealer_cards.cards.each do |card| %>
+        <%= image_tag card.to_s, style: 'margin:0px 5px 5px 0px' %>
       <% end %>
     <% end %>
   </div>
@@ -85,12 +84,12 @@
 
   <div class="well" id='player'>
     <h4><%= label_tag(:cards, "#{name}'s cards:") %></h4>
-    <% @player_cards.each do |card| %>
-      <%= image_tag to_image(card), style: "margin:0px 5px 5px 0px" %>
+    <% @player_cards.cards.each do |card| %>
+      <%= image_tag card.to_s, style: "margin:0px 5px 5px 0px" %>
     <% end %>
     <% if !session[:player_turn] %>
       <p id="stay_message"></p>
-      <h5><%= "#{name} stayed at 18. #{name} has $#{budget} and bet $#{wager} this round." %></h5>
+      <h5><%= "#{name} stayed at #{player_value}. #{name} has $#{budget} and bet $#{wager} this round." %></h5>
       <p></p>
     <% end %>
   </div>
